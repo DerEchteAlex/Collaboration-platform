@@ -1,11 +1,18 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Dashboard from "./editor/Dashboard"
 import BlockEditor from "./editor/blockeditor"
 
 function App() {
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Offline Collaborative Editor</h1>
-      <BlockEditor />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* Document dashboard — list + create */}
+        <Route path="/" element={<Dashboard />} />
+
+        {/* Editor — opened by dashboard or shared link */}
+        <Route path="/doc/:docId" element={<BlockEditor />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

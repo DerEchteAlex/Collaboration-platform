@@ -1,25 +1,12 @@
 import * as Y from "yjs"
-import { v4 as uuidv4 } from "uuid"
 
-export function createDocument(docId: string) {
+/**
+ * Creates and returns a new shared Yjs document.
+ * The "prosemirror" XmlFragment is required by @tiptap/extension-collaboration.
+ */
+export function createDocument(): Y.Doc {
   const ydoc = new Y.Doc()
-  const blocks = ydoc.getArray("blocks")
-  if (blocks.length === 0) {
-
-    const block = new Y.Map()
-
-    block.set("id", uuidv4())
-    block.set("type", "paragraph")
-    block.set("content", "")
-
-    blocks.push([block])
-  }
-
-  return {
-    ydoc,
-    blocks
-  }
+  ydoc.getXmlFragment("prosemirror")
+  console.log("Y.Doc created")
+  return ydoc
 }
-// Array of blocks in the format of {id: "1", type: "paragraph", content: "Hello"}
-//defines shared document state
-//each document is 1 y.doc
