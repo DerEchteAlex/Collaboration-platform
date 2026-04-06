@@ -14,7 +14,6 @@ function generateColor(): string {
 }
 
 function hslToHex(hsl: string): string {
-  // Convert hsl(...) to #rrggbb for Tiptap cursor
   const match = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/)
   if (!match) return "#ff5733"
   const h = parseInt(match[1]) / 360

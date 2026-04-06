@@ -1,11 +1,4 @@
-/* ─────────────────────────────────────────────────────────────────────────────
-   THEME TOKENS
-   Applied via [data-theme="dark"] / [data-theme="light"] on <html>
-   Dark:  #262624 bg, #30302E surface, #0F9158 accent
-   Light: #FFFFFF bg, #919191 surface, #0F9158 accent
-───────────────────────────────────────────────────────────────────────────── */
-
-@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap");
 
 :root {
   --accent:       #0F9158;
@@ -14,12 +7,11 @@
   --danger:       #ff4757;
   --radius:       12px;
   --radius-lg:    20px;
-  --font-display: "Syne", sans-serif;
+  --font-display: 'Roboto', sans-serif;
   --font-body:    "DM Sans", sans-serif;
   --transition:   0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ── Dark theme (default) ──────────────────────────────────────────────────── */
 :root,
 [data-theme="dark"] {
   --bg:           #262624;
@@ -37,7 +29,6 @@
   --shadow:       rgba(0,0,0,0.5);
 }
 
-/* ── Light theme ───────────────────────────────────────────────────────────── */
 [data-theme="light"] {
   --bg:           #ffffff;
   --bg2:          #f2f2f0;
@@ -54,7 +45,7 @@
   --shadow:       rgba(0,0,0,0.12);
 }
 
-/* ─── Reset ───────────────────────────────────────────────────────────────── */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -66,14 +57,13 @@ body {
   transition: background 0.25s ease, color 0.25s ease;
 }
 
-/* ─── Dashboard shell ─────────────────────────────────────────────────────── */
+
 .dash {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* ─── Header ──────────────────────────────────────────────────────────────── */
 .dash-header {
   display: flex;
   align-items: center;
@@ -102,9 +92,9 @@ body {
 
 .dash-brand-name {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 20px;
-  letter-spacing: -0.5px;
+  letter-spacing: 0.5px;
   color: var(--text);
 }
 
@@ -114,7 +104,6 @@ body {
   gap: 14px;
 }
 
-/* ─── Theme toggle pill ───────────────────────────────────────────────────── */
 .theme-toggle {
   cursor: pointer;
   user-select: none;
@@ -172,7 +161,6 @@ body {
 .theme-toggle-thumb--dark  { left: 3px; }
 .theme-toggle-thumb--light { left: 37px; }
 
-/* ─── Avatar ──────────────────────────────────────────────────────────────── */
 .dash-avatar {
   width: 38px;
   height: 38px;
@@ -195,7 +183,6 @@ body {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-/* ─── Hero ────────────────────────────────────────────────────────────────── */
 .dash-hero {
   padding: 60px 40px 40px;
   max-width: 1200px;
@@ -206,7 +193,7 @@ body {
 .dash-title {
   font-family: var(--font-display);
   font-size: clamp(32px, 5vw, 52px);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -1.5px;
   line-height: 1.05;
   background: linear-gradient(135deg, var(--text) 40%, var(--accent));
@@ -258,7 +245,6 @@ body {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-/* ─── Grid ────────────────────────────────────────────────────────────────── */
 .dash-grid-wrap {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -277,7 +263,6 @@ body {
   text-align: center;
 }
 
-/* ─── Cards ───────────────────────────────────────────────────────────────── */
 .dash-card {
   position: relative;
   border-radius: var(--radius-lg);
@@ -417,7 +402,6 @@ body {
   color: var(--danger);
 }
 
-/* ─── Modal ───────────────────────────────────────────────────────────────── */
 .modal-backdrop {
   position: fixed;
   inset: 0;

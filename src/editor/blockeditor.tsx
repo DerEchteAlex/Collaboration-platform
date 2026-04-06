@@ -709,7 +709,7 @@ export default function BlockEditor() {
             onClick={() => setShowHistory(v => !v)}
             title="Version history"
           >
-            🕐 History
+            ⧗ History
           </button>
 
           {/* Eye / focus mode */}
@@ -725,8 +725,8 @@ export default function BlockEditor() {
           {/* Theme toggle */}
           <div className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
             <div className={`theme-toggle-track theme-toggle-track--${theme}`}>
-              <span className="theme-toggle-icon">🌙</span>
-              <span className="theme-toggle-icon">☀️</span>
+              <span className="theme-toggle-icon">☾</span>
+              <span className="theme-toggle-icon">☀</span>
               <div className={`theme-toggle-thumb theme-toggle-thumb--${theme}`} />
             </div>
           </div>

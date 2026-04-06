@@ -20,7 +20,6 @@ const PORT = parseInt(process.env.PORT || "1234")
 const wsReadyStateConnecting = 0
 const wsReadyStateOpen = 1
 
-// ─── Document store ───────────────────────────────────────────────────────────
 const docs = new Map()
 
 const getYDoc = (docName) =>
@@ -30,8 +29,6 @@ const getYDoc = (docName) =>
     return doc
   })
 
-// ─── Message types (mirrors y-websocket protocol) ────────────────────────────
-const messageSync = 0
 const messageAwareness = 1
 
 const send = (conn, message) => {
@@ -46,7 +43,6 @@ const send = (conn, message) => {
   }
 }
 
-// ─── Connection handler ───────────────────────────────────────────────────────
 const setupConnection = (conn, req) => {
   const docName = req.url.slice(1).split("?")[0]
   const doc = getYDoc(docName)
@@ -131,7 +127,6 @@ const setupConnection = (conn, req) => {
   })
 }
 
-// ─── HTTP + WS server ─────────────────────────────────────────────────────────
 const server = http.createServer((req, res) => {
   res.writeHead(200, { "Content-Type": "text/plain" })
   res.end("y-websocket server running\n")
@@ -141,5 +136,5 @@ const wss = new WebSocketServer({ server })
 wss.on("connection", setupConnection)
 
 server.listen(PORT, HOST, () => {
-  console.log(`✅ y-websocket server running on ws://${HOST}:${PORT}`)
+  console.log(`y-websocket server running on ws://${HOST}:${PORT}`)
 })

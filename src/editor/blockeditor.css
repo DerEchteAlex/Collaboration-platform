@@ -1,6 +1,4 @@
-/* ─────────────────────────────────────────────────────────────────────────────
-   THEME TOKENS — inherited from <html data-theme="..."> set by Dashboard/Editor
-───────────────────────────────────────────────────────────────────────────── */
+
 
 @import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap");
 
@@ -61,7 +59,6 @@ body {
   transition: background 0.25s ease, color 0.25s ease;
 }
 
-/* ─── Shell ───────────────────────────────────────────────────────────────── */
 .editor-shell {
   display: flex;
   flex-direction: column;
@@ -75,7 +72,6 @@ body {
   font-family: var(--font-body);
 }
 
-/* ─── Top bar ─────────────────────────────────────────────────────────────── */
 .editor-topbar {
   display: flex;
   align-items: center;
@@ -183,7 +179,6 @@ body {
   flex-shrink: 0;
 }
 
-/* ─── Eye / Focus mode button ─────────────────────────────────────────────── */
 .eye-btn {
   position: relative;
   display: flex;
@@ -218,7 +213,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Sliding indicator inside the button */
 .eye-btn-slider {
   display: block;
   width: 8px;
@@ -239,7 +233,6 @@ body {
   box-shadow: 0 0 8px var(--accent-glow);
 }
 
-/* ─── Theme toggle (editor topbar) ───────────────────────────────────────── */
 .theme-toggle { cursor: pointer; user-select: none; flex-shrink: 0; }
 
 .theme-toggle-track {
@@ -281,7 +274,6 @@ body {
 .theme-toggle-thumb--dark  { left: 3px; }
 .theme-toggle-thumb--light { left: 33px; }
 
-/* ─── Action buttons ──────────────────────────────────────────────────────── */
 .editor-action-btn {
   background: transparent;
   border: 1px solid var(--border);
@@ -314,7 +306,6 @@ body {
   box-shadow: 0 0 16px var(--accent-glow);
 }
 
-/* ─── Download dropdown ───────────────────────────────────────────────────── */
 .download-wrap { position: relative; }
 
 .download-menu {
@@ -354,7 +345,6 @@ body {
 .download-menu button:hover { background: var(--bg3); }
 .download-menu button small { color: var(--text3); font-size: 12px; }
 
-/* ─── Toolbar ─────────────────────────────────────────────────────────────── */
 .editor-toolbar {
   display: flex;
   align-items: center;
@@ -418,7 +408,6 @@ body {
   border-color: var(--border);
 }
 
-/* Logo/icon alignment buttons — swap img src to your 15×15 icon */
 .tb-btn--logo {
   padding: 5px 7px;
   display: inline-flex;
@@ -450,7 +439,6 @@ body {
 
 .tb-select:focus { border-color: var(--accent); }
 
-/* ─── Loading ─────────────────────────────────────────────────────────────── */
 .editor-loading {
   flex: 1;
   display: flex;
@@ -472,7 +460,6 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ─── Editor content wrap ─────────────────────────────────────────────────── */
 .editor-content-wrap {
   flex: 1;
   overflow-y: auto;
@@ -482,7 +469,6 @@ body {
   transition: background 0.3s ease;
 }
 
-/* Focus mode: writing surface becomes #CEE8D1 */
 .editor-content-wrap--focus {
   background: #CEE8D1;
 }
@@ -493,7 +479,6 @@ body {
 
 .editor-content { width: 100%; max-width: 720px; }
 
-/* ─── Tiptap editor body ──────────────────────────────────────────────────── */
 .editor-body {
   font-family: var(--font-editor);
   font-size: 17px;
@@ -505,7 +490,6 @@ body {
   transition: color 0.25s ease;
 }
 
-/* In focus mode, override text color for readability on green bg */
 .editor-content-wrap--focus .editor-body {
   color: #1a2e1f;
 }
@@ -569,7 +553,6 @@ body {
   color: #7aaa84;
 }
 
-/* ─── Page layout modes ───────────────────────────────────────────────────── */
 .editor-main-row {
   flex: 1;
   display: flex;
@@ -587,7 +570,6 @@ body {
   max-width: 100%;
 }
 
-/* Page view — white card with margins like Word */
 .editor-content-wrap--page {
   padding: 40px 24px;
   background: var(--bg3);
@@ -610,7 +592,6 @@ body {
   box-shadow: 0 2px 24px rgba(0,0,0,0.1);
 }
 
-/* ─── Font colour picker ──────────────────────────────────────────────────── */
 .tb-color-wrap { position: relative; }
 
 .tb-color-btn {
@@ -679,7 +660,6 @@ body {
   border: 1px solid var(--border);
 }
 
-/* ─── Version history panel ───────────────────────────────────────────────── */
 .history-panel {
   width: 260px;
   flex-shrink: 0;
@@ -869,16 +849,13 @@ body {
   border-color: var(--text2);
 }
 
-/* ─── Topbar group for font size ──────────────────────────────────────────── */
 .topbar-group { align-items: center; }
 
-/* ─── Active topbar button ────────────────────────────────────────────────── */
 .editor-action-btn--active {
   background: var(--accent-glow) !important;
   border-color: var(--accent) !important;
   color: var(--accent) !important;
 }
 
-/* ─── Font select wider ───────────────────────────────────────────────────── */
 .tb-select--font { max-width: 140px; }
 .tb-select--size { max-width: 72px; }

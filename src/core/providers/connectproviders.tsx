@@ -17,13 +17,12 @@ export function connectProviders(
   ydoc: Y.Doc
 ): Promise<ConnectedProviders> {
   return new Promise((resolve) => {
-    // ── 1. Offline persistence (loads first) ──────────────────────────────
+
     const indexeddbProvider = new IndexeddbPersistence(docId, ydoc)
 
     indexeddbProvider.whenSynced.then(() => {
       console.log("Offline data loaded")
 
-      // ── 2. WebSocket (connects after local data is ready) ──────────────
       const websocketProvider = new WebsocketProvider(
         "ws://localhost:1234",
         docId,
@@ -31,7 +30,6 @@ export function connectProviders(
         { connect: true }
       )
 
-      // ── 3. Awareness / user identity ──────────────────────────────────
       const storedUser = localStorage.getItem("collab-user")
       const user = storedUser
         ? JSON.parse(storedUser)
@@ -46,7 +44,6 @@ export function connectProviders(
 
       websocketProvider.awareness.setLocalStateField("user", user)
 
-      // ── 4. Debug logs ──────────────────────────────────────────────────
       websocketProvider.on("status", (e: { status: string }) => {
         console.log("WS STATUS:", e.status)
       })
