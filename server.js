@@ -14,7 +14,7 @@ import * as encoding from "lib0/encoding"
 import * as decoding from "lib0/decoding"
 import * as map from "lib0/map"
 
-const HOST = process.env.HOST || "localhost"
+const HOST = process.env.HOST || "0.0.0.0"
 const PORT = parseInt(process.env.PORT || "1234")
 
 const wsReadyStateConnecting = 0
