@@ -24,7 +24,7 @@ export function connectProviders(
       console.log("Offline data loaded")
 
       const websocketProvider = new WebsocketProvider(
-        "ws://localhost:1234",
+        "https://collaboration-platform-3xkd.onrender.com",
         docId,
         ydoc,
         { connect: true }
