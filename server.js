@@ -19,6 +19,7 @@ const PORT = parseInt(process.env.PORT || "1234")
 
 const wsReadyStateConnecting = 0
 const wsReadyStateOpen = 1
+const messageSync = 0
 
 const docs = new Map()
 
