@@ -115,13 +115,16 @@ interface Snapshot {
   author: string
 }
 
-function getSnapshots(docId: string): Snapshot[] {
-  try {
-    return JSON.parse(localStorage.getItem(`collab-history-${docId}`) || "[]")
-  } catch { return [] }
+// Store snapshots in the shared ydoc so all users see them
+function getYSnapshots(ydoc: Y.Doc): Y.Array<Snapshot> {
+  return ydoc.getArray<Snapshot>("snapshots")
 }
 
-function saveSnapshot(docId: string, ydoc: Y.Doc, author: string, label?: string) {
+function getSnapshots(ydoc: Y.Doc): Snapshot[] {
+  return getYSnapshots(ydoc).toArray()
+}
+
+function saveSnapshot(ydoc: Y.Doc, author: string, label?: string) {
   const update = Y.encodeStateAsUpdate(ydoc)
   const b64 = btoa(String.fromCharCode(...update))
   const snap: Snapshot = {
@@ -130,21 +133,36 @@ function saveSnapshot(docId: string, ydoc: Y.Doc, author: string, label?: string
     update: b64,
     author,
   }
-  const snaps = getSnapshots(docId)
-  snaps.unshift(snap)
-  // Keep max 50 snapshots
-  const trimmed = snaps.slice(0, 50)
-  localStorage.setItem(`collab-history-${docId}`, JSON.stringify(trimmed))
+  const ySnaps = getYSnapshots(ydoc)
+  ydoc.transact(() => {
+    ySnaps.unshift([snap])
+    // Keep max 50
+    if (ySnaps.length > 50) ySnaps.delete(50, ySnaps.length - 50)
+  })
   return snap
 }
 
-function restoreSnapshot(docId: string, snap: Snapshot, ydoc: Y.Doc) {
+function restoreSnapshot(snap: Snapshot, ydoc: Y.Doc) {
   const binary = Uint8Array.from(atob(snap.update), c => c.charCodeAt(0))
-  // Create a clean doc from the snapshot, then apply it
   const tempDoc = new Y.Doc()
   Y.applyUpdate(tempDoc, binary)
   const freshUpdate = Y.encodeStateAsUpdate(tempDoc)
   Y.applyUpdate(ydoc, freshUpdate)
+}
+
+// Diff two HTML strings at paragraph level, return changed paragraph indices
+function diffParagraphs(htmlA: string, htmlB: string): number[] {
+  const parse = (html: string) => {
+    const d = new DOMParser().parseFromString(html, "text/html")
+    return Array.from(d.body.children).map(el => el.textContent || "")
+  }
+  const a = parse(htmlA), b = parse(htmlB)
+  const changed: number[] = []
+  const maxLen = Math.max(a.length, b.length)
+  for (let i = 0; i < maxLen; i++) {
+    if (a[i] !== b[i]) changed.push(i)
+  }
+  return changed
 }
 
 // ── CollabEditor ──────────────────────────────────────────────────────────────
@@ -165,8 +183,9 @@ function CollabEditor({
 }) {
   const [showColorPicker, setShowColorPicker] = useState(false)
   const [colorPalettePos, setColorPalettePos] = useState<{ top: number; left: number } | null>(null)
-  const [snapshots, setSnapshots] = useState<Snapshot[]>(() => getSnapshots(docId))
+  const [snapshots, setSnapshots] = useState<Snapshot[]>(() => getSnapshots(ydoc))
   const [previewSnap, setPreviewSnap] = useState<Snapshot | null>(null)
+  const [changedParas, setChangedParas] = useState<number[]>([])
   const colorBtnRef = useRef<HTMLDivElement>(null)
   const autoSaveRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -185,20 +204,26 @@ function CollabEditor({
     editorProps: { attributes: { class: "editor-body" } },
   })
 
+  // Observe shared snapshot array — updates for ALL users when anyone saves
+  useEffect(() => {
+    const ySnaps = getYSnapshots(ydoc)
+    const observer = () => setSnapshots(ySnaps.toArray())
+    ySnaps.observe(observer)
+    return () => ySnaps.unobserve(observer)
+  }, [ydoc])
+
   // Auto-snapshot every 2 minutes
   useEffect(() => {
     autoSaveRef.current = setInterval(() => {
-      const snap = saveSnapshot(docId, ydoc, userName)
-      setSnapshots(getSnapshots(docId))
+      saveSnapshot(ydoc, userName)
     }, 2 * 60 * 1000)
     return () => { if (autoSaveRef.current) clearInterval(autoSaveRef.current) }
-  }, [docId, ydoc, userName])
+  }, [ydoc, userName])
 
-  // Also snapshot on mount (captures current state as "initial")
+  // Snapshot on mount
   useEffect(() => {
     setTimeout(() => {
-      saveSnapshot(docId, ydoc, userName, "Auto-save")
-      setSnapshots(getSnapshots(docId))
+      saveSnapshot(ydoc, userName, "Auto-save")
     }, 3000)
   }, [])
 
@@ -217,15 +242,58 @@ function CollabEditor({
   if (!editor) return null
 
   const handleManualSnapshot = () => {
-    saveSnapshot(docId, ydoc, userName, "Manual save — " + new Date().toLocaleTimeString())
-    setSnapshots(getSnapshots(docId))
+    saveSnapshot(ydoc, userName, "Manual save — " + new Date().toLocaleTimeString())
   }
 
   const handleRestore = (snap: Snapshot) => {
     if (confirm(`Restore to version from ${snap.label}? Current content will be overwritten.`)) {
-      restoreSnapshot(docId, snap, ydoc)
+      restoreSnapshot(snap, ydoc)
       setPreviewSnap(null)
+      setChangedParas([])
     }
+  }
+
+  // When a snapshot is selected, diff it against current content and highlight changes
+  const handleSelectSnap = (snap: Snapshot) => {
+    setPreviewSnap(snap)
+    const editorEl = document.querySelector(".editor-body")
+    if (!editorEl) return
+    const currentHtml = editorEl.innerHTML
+
+    // Decode snapshot html
+    const tempDoc = new Y.Doc()
+    const binary = Uint8Array.from(atob(snap.update), c => c.charCodeAt(0))
+    Y.applyUpdate(tempDoc, binary)
+    // Get text content from snapshot ydoc prosemirror field
+    const snapText = tempDoc.getXmlFragment("prosemirror")
+    // Fallback: compare paragraph text from current editor vs snapshot text
+    const snapParas = snapText.toString()
+    const changed = diffParagraphs(snapParas, currentHtml)
+    setChangedParas(changed)
+
+    // Highlight changed paragraphs in the editor DOM
+    const paras = editorEl.querySelectorAll("p, h1, h2, h3, li, blockquote")
+    paras.forEach((el, i) => {
+      const htmlEl = el as HTMLElement
+      if (changed.includes(i)) {
+        htmlEl.style.background = "rgba(251, 191, 36, 0.18)"
+        htmlEl.style.borderRadius = "4px"
+        htmlEl.style.transition = "background 0.3s"
+      } else {
+        htmlEl.style.background = ""
+      }
+    })
+  }
+
+  // Clear highlights when deselecting
+  const handleClearSnap = () => {
+    setPreviewSnap(null)
+    setChangedParas([])
+    const editorEl = document.querySelector(".editor-body")
+    if (!editorEl) return
+    editorEl.querySelectorAll("p, h1, h2, h3, li, blockquote").forEach(el => {
+      (el as HTMLElement).style.background = ""
+    })
   }
 
   const ToolBtn = ({ label, active, onClick, title: tip }: {
@@ -443,7 +511,7 @@ function CollabEditor({
               </button>
             </div>
 
-            <div className="history-group-label">Today</div>
+            <div className="history-group-label">Shared across all collaborators</div>
 
             <div className="history-list">
               {snapshots.length === 0 && (
@@ -453,21 +521,38 @@ function CollabEditor({
                 <div
                   key={snap.timestamp}
                   className={`history-item ${previewSnap?.timestamp === snap.timestamp ? "history-item--active" : ""}`}
-                  onClick={() => setPreviewSnap(snap)}
+                  onClick={() =>
+                    previewSnap?.timestamp === snap.timestamp ? handleClearSnap() : handleSelectSnap(snap)
+                  }
                 >
                   <div className="history-item-time">{snap.label}</div>
-                  {i === 0 && <div className="history-item-badge">Current</div>}
+                  <div className="history-item-meta">
+                    {i === 0 && <div className="history-item-badge">Current</div>}
+                    {previewSnap?.timestamp === snap.timestamp && changedParas.length > 0 && (
+                      <div className="history-item-badge history-item-badge--diff">
+                        {changedParas.length} change{changedParas.length !== 1 ? "s" : ""}
+                      </div>
+                    )}
+                  </div>
                   <div className="history-item-author">
                     <span className="history-item-dot" />
                     {snap.author}
                   </div>
                   {previewSnap?.timestamp === snap.timestamp && (
-                    <button
-                      className="history-restore-btn"
-                      onClick={(e) => { e.stopPropagation(); handleRestore(snap) }}
-                    >
-                      Restore this version
-                    </button>
+                    <div className="history-item-actions">
+                      <button
+                        className="history-restore-btn"
+                        onClick={(e) => { e.stopPropagation(); handleRestore(snap) }}
+                      >
+                        Restore this version
+                      </button>
+                      <button
+                        className="history-clear-btn"
+                        onClick={(e) => { e.stopPropagation(); handleClearSnap() }}
+                      >
+                        Clear highlight
+                      </button>
+                    </div>
                   )}
                 </div>
               ))}
