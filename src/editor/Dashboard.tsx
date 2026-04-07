@@ -9,6 +9,7 @@ import {
 } from "../core/docStore"
 import { useUserIdentity } from "../core/useUserIdentity"
 import "./dashboard.css"
+import spiderLogo from "../logo/spiderlogo.png"
 
 // ── Theme stored in localStorage so editor inherits it ────────────────────────
 export type AppTheme = "dark" | "light"
@@ -34,6 +35,11 @@ export default function Dashboard() {
   // Apply theme on mount
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme)
+    const link = document.querySelector<HTMLLinkElement>("link[rel~='icon']")
+      || Object.assign(document.createElement("link"), { rel: "icon" })
+    link.type = "image/png"
+    link.href = spiderLogo
+    document.head.appendChild(link)
   }, [])
 
   useEffect(() => {
@@ -80,7 +86,7 @@ export default function Dashboard() {
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <header className="dash-header">
         <div className="dash-brand">
-          <span className="dash-logo">🕷</span>
+          <img src={spiderLogo} className="dash-logo" alt="Spider logo" />
           <span className="dash-brand-name">Offline Collab Platform</span>
         </div>
 

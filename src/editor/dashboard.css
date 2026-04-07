@@ -85,9 +85,9 @@ body {
 }
 
 .dash-logo {
-  font-size: 42px;
-  color: var(--accent);
-  line-height: 1;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
 }
 
 .dash-brand-name {

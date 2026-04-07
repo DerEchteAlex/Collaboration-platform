@@ -6,10 +6,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Document dashboard — list + create */}
+        {/* Doc dashboard */}
         <Route path="/" element={<Dashboard />} />
-
-        {/* Editor — opened by dashboard or shared link */}
+        {/* For Link-Sharing */}
         <Route path="/doc/:docId" element={<BlockEditor />} />
       </Routes>
     </BrowserRouter>
