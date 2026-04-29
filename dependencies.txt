@@ -1,0 +1,49 @@
+# Collaboration Platform — Dependencies
+# Run each block in your terminal inside the project folder
+
+# ─── TipTap Extensions ──────────────────────────────────────────
+npm install @tiptap/extension-collaboration
+npm install @tiptap/extension-collaboration-cursor
+npm install @tiptap/extension-color
+npm install @tiptap/extension-font-family
+npm install @tiptap/extension-placeholder
+npm install @tiptap/extension-text-align
+npm install @tiptap/extension-text-style
+npm install @tiptap/extension-underline
+npm install @tiptap/react
+npm install @tiptap/starter-kit
+npm install @tiptap/y-tiptap
+
+# ─── Yjs (CRDT Engine + Sync Providers) ─────────────────────────
+npm install yjs
+npm install y-indexeddb
+npm install y-websocket
+npm install y-prosemirror
+npm install y-protocols
+npm install lib0
+
+# ─── React ──────────────────────────────────────────────────────
+npm install react
+npm install react-dom
+npm install react-router-dom
+
+# ─── Document Export ────────────────────────────────────────────
+npm install docx
+npm install file-saver
+
+# ─── Utilities ──────────────────────────────────────────────────
+npm install uuid
+npm install ws
+
+# ─── Dev Dependencies ───────────────────────────────────────────
+npm install -D @types/file-saver
+npm install -D @types/react
+npm install -D @types/react-dom
+npm install -D @types/uuid
+npm install -D @vitejs/plugin-react
+npm install -D typescript
+npm install -D vite
+
+# ─── Or install everything at once ──────────────────────────────
+npm install @tiptap/extension-collaboration @tiptap/extension-collaboration-cursor @tiptap/extension-color @tiptap/extension-font-family @tiptap/extension-placeholder @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extension-underline @tiptap/react @tiptap/starter-kit @tiptap/y-tiptap yjs y-indexeddb y-websocket y-prosemirror y-protocols lib0 react react-dom react-router-dom docx file-saver uuid ws
+npm install -D @types/file-saver @types/react @types/react-dom @types/uuid @vitejs/plugin-react typescript vite
