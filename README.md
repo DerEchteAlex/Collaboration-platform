@@ -52,7 +52,64 @@ IndexedDB integration via `y-indexeddb` was layered on top so that the Yjs docum
 The final piece was the UI: building a toolbar with TipTap extensions for formatting, presence cursors so collaborators can see each other in real time, and the DOCX export flow.
 
 ---
+## How It Works
 
+### System Architecture
+
+![System Architecture]
+<img width="1219" height="1290" alt="Image" src="https://github.com/user-attachments/assets/b6db071e-c1c3-4d38-a244-eb19ca9d26e1" />
+
+The app is served as a static site on Render and runs entirely in the browser as a
+React app. Every client — whether desktop or mobile — connects to the same React
+app shell which is made up of three core components:
+
+- **Dashboard** — lists existing documents and lets you create new ones
+- **BlockEditor** — the TipTap-powered rich text editor with toolbar
+- **CollabEditor** — handles history, awareness, and presence cursors
+
+All three components share a single **Yjs document (`Y.Doc`)** as their source of
+truth. This shared CRDT state holds the ProseMirror content field, a snapshots
+array, and the document title — everything that needs to stay in sync across peers.
+
+The `Y.Doc` connects to three providers simultaneously:
+- **IndexedDB** — persists the document locally for offline support
+- **WebSocket provider** — syncs the document with other peers via the server
+- **Awareness** — broadcasts cursor positions and user presence in real time
+
+The Node.js server (`server.js`) running on Render acts as the relay — it hosts one
+in-memory Yjs server per room and handles the awareness broadcast protocol.
+
+---
+
+### Sync & Offline Flow
+
+![Sync and Offline Flow]
+<img width="119" height="150" alt="Image" src="https://github.com/user-attachments/assets/56b7407e-07f3-48f8-8b1a-e0c15b633ba0" />
+
+This diagram shows exactly what happens at each phase of a collaboration session:
+
+**Phase 1 — Editing**
+Each browser runs its own TipTap editor backed by a local `Y.Doc`. Every keystroke
+mutates the CRDT, not just React state. The server (y-websocket) broadcasts these
+updates to all peers connected to the same room.
+
+**Phase 2 — Local Persistence**
+Every change is also written to IndexedDB via `y-indexeddb`. This means the document
+is saved locally as you type — no network required to preserve your work.
+
+**Phase 3 — Disconnect**
+When the WebSocket disconnects, the client continues editing against its local
+`Y.Doc`. The WS status flips to `disconnected` and the in-memory Yjs server on the
+other side holds its last known state.
+
+**Phase 4 — Reconnect & Merge**
+When the connection is restored, the client sends its full state vector to the server.
+The server and client perform a **CRDT merge** — both sides converge to the same
+document state automatically, with no manual conflict resolution and zero data loss.
+The `IndexedDB` then reloads the restored `Y.Doc` state to keep local storage in sync.
+
+This is what makes the platform truly offline-first: the merge always succeeds
+regardless of how long a peer was disconnected or how many edits were made offline.
 ## What I Learned
 
 **CRDTs are a different way of thinking about data**
