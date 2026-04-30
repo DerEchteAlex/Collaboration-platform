@@ -58,6 +58,7 @@ The final piece was the UI: building a toolbar with TipTap extensions for format
 
 <img width="1219" height="1290" alt="Image" src="https://github.com/user-attachments/assets/b6db071e-c1c3-4d38-a244-eb19ca9d26e1" />
 
+
 The app is served as a static site on Render and runs entirely in the browser as a
 React app. Every client — whether desktop or mobile — connects to the same React
 app shell which is made up of three core components:
@@ -83,6 +84,7 @@ in-memory Yjs server per room and handles the awareness broadcast protocol.
 ### Sync & Offline Flow
 
 <img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/615372c0-0db1-46f6-8539-fdb83cac7450" />
+
 
 This diagram shows exactly what happens at each phase of a collaboration session:
 
