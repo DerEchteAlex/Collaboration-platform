@@ -110,6 +110,9 @@ The `IndexedDB` then reloads the restored `Y.Doc` state to keep local storage in
 
 This is what makes the platform truly offline-first: the merge always succeeds
 regardless of how long a peer was disconnected or how many edits were made offline.
+
+---
+
 ## What I Learned
 
 **CRDTs are a different way of thinking about data**
