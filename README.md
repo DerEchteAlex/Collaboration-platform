@@ -56,7 +56,6 @@ The final piece was the UI: building a toolbar with TipTap extensions for format
 
 ### System Architecture
 
-![System Architecture]
 <img width="1219" height="1290" alt="Image" src="https://github.com/user-attachments/assets/b6db071e-c1c3-4d38-a244-eb19ca9d26e1" />
 
 The app is served as a static site on Render and runs entirely in the browser as a
@@ -83,8 +82,7 @@ in-memory Yjs server per room and handles the awareness broadcast protocol.
 
 ### Sync & Offline Flow
 
-![Sync and Offline Flow]
-<img width="119" height="150" alt="Image" src="https://github.com/user-attachments/assets/56b7407e-07f3-48f8-8b1a-e0c15b633ba0" />
+<img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/615372c0-0db1-46f6-8539-fdb83cac7450" />
 
 This diagram shows exactly what happens at each phase of a collaboration session:
 
