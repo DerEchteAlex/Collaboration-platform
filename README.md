@@ -149,6 +149,9 @@ Integrating `y-indexeddb` made me think carefully about when to load, when to sy
 
 ## Running the Project
 
+You visit Here: https://collaboration-platform-1-whzd.onrender.com/
+I have Deployed it on render, but if you want to run it locally the steps are given below.
+
 ### Prerequisites
 - Node.js v18+
 - npm v9+
